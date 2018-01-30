@@ -13,7 +13,7 @@
 
 # Pull base image.
 FROM phusion/baseimage
-LABEL version="0.0.1"
+LABEL version="0.0.2"
 
 
 # ROOT SETUP ==================================================================
@@ -22,9 +22,6 @@ LABEL version="0.0.1"
 ENV HOME "/root"
 ENV NODE_PATH "/usr/lib/node_modules"
 ENV PATH "$PATH:/usr/local/bin"
-
-ADD startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
 
 
 # INSTALLATION ================================================================
@@ -51,6 +48,16 @@ RUN DEBIAN_FRONTEND="noninteractive" npm install -g nodemon
 # Define mountable directories
 VOLUME ["/data/db"]
 
+# Run mongod as a service
+RUN mkdir /etc/service/mongod
+ADD ./services/mongod.sh /etc/service/mongod/run
+RUN chmod +x /etc/service/mongod/run
+
+# Run nodemon as a service
+RUN mkdir /etc/service/nodemon
+ADD ./services/nodemon.sh /etc/service/nodemon/run
+RUN chmod +x /etc/service/nodemon/run
+
 
 # PORTS =======================================================================
 
@@ -68,6 +75,7 @@ EXPOSE 4000
 # cleanup apt and lists
 RUN apt-get clean
 RUN apt-get autoclean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Define default command
-CMD ["/usr/local/bin/startup.sh"]
+# Define default command, use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
