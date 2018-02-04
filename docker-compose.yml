@@ -1,0 +1,12 @@
+version: "3"
+services:
+    mongodb-nodejs:
+        build: .
+        image: mountainsnow/mongodb-nodejs:latest
+        container_name: mongodb-nodejs
+        ports:
+            - "4000:4000"
+            - "27017:27017"
+            - "28017:28017"
+        volumes:
+            - /Users/mountain/Sites/express-rest-api:/var/www
