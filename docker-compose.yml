@@ -10,3 +10,4 @@ services:
             - "28017:28017"
         volumes:
             - /Users/mountain/Sites/express-rest-api:/var/www
+            - /Users/mountain/Sites/data:/data/db
